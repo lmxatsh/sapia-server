@@ -8,8 +8,6 @@ module.exports = {
         sourceType: 'module',
     },
     extends: ['eslint:recommended'],
-    rules: {
-        'max-len': ['error', { code: 50 }],
-    },
+    rules: {},
     settings: {},
 }
