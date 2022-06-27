@@ -12,7 +12,8 @@ const User = mongoose.model(
       status: String,
     },
     { timestamps: true }
-  )
+  ),
+  'users'
 )
 
 export default User
