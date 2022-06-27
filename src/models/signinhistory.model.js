@@ -9,7 +9,7 @@ const SigninHistory = mongoose.model(
     },
     { timestamps: true }
   ),
-  'sign_history'
+  'signin_history'
 )
 
 export default SigninHistory
