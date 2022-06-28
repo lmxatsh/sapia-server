@@ -11,7 +11,7 @@ const signup = async (req, res, next) => {
     }
     const user = await User.findOne({ username })
     if (user) {
-      return res.status(422).send({
+      return res.status(409).send({
         username: username,
         signup: 'fail',
         error: 'user already exists',
@@ -23,7 +23,9 @@ const signup = async (req, res, next) => {
         status: 'active',
       })
       if (data) {
-        res.status(201).send({ username: data.username, signup: 'success' })
+        return res
+          .status(201)
+          .send({ username: data.username, signup: 'success' })
       }
     }
   } catch (error) {
@@ -45,7 +47,11 @@ const signin = async (req, res, next) => {
         handleBlockedUser(req, res, next, user)
       }
     } else {
-      return res.status(422).send({ error: `${username} not exist` })
+      return res.status(422).send({
+        username: username,
+        signin: 'fail',
+        error: `${username} not exist`,
+      })
     }
   } catch (error) {
     next(error)
