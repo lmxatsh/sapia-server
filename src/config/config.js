@@ -3,6 +3,7 @@ const env = process.env.NODE_ENV || 'development'
 const development = {
   app: {
     port: parseInt(process.env.DEV_APP_PORT) || 3000,
+    secret: process.env.JWT_SECRET || 'sapia',
   },
   mongodb: {
     host: process.env.DEV_MONGO_HOST || 'localhost',

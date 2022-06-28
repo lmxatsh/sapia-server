@@ -1,7 +1,23 @@
 import bcrypt from 'bcryptjs'
 import { User, SigninHistory } from '../models/index.js'
 
-const getUser = async () => {}
+//return data for GET /users/:username
+const getUser = async (req, res, next) => {
+  try {
+    const username = req.params.username
+    const user = await User.findOne({ username })
+    if (user && username === req.decoded.username) {
+      return res.status(200).send({
+        username: username,
+        createdAt: user.createdAt,
+      })
+    } else {
+      return res.status(401).send({ error: `unauthorized access` })
+    }
+  } catch (error) {
+    next(error)
+  }
+}
 
 const signup = async (req, res, next) => {
   try {
@@ -95,8 +111,9 @@ const handleActiveUser = async (req, res, next, user) => {
         username: username,
         status: 'success',
       })
-      console.log('login successfully')
-      res.status(200).send({ username: username, signin: 'success' })
+      console.log(`${username} login successfully`)
+      //res.status(200).send({ username: username, signin: 'success' })
+      res.locals.username = username
       next() // return JWT in the following step
     } else {
       const hist = await SigninHistory.create({
