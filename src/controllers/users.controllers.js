@@ -1,5 +1,11 @@
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 import { User, SigninHistory } from '../models/index.js'
+//import User from '../models/user.model'
+//import SigninHistory from '../models/signinhistory.model'
+import config from '../config/config.js'
+
+const secret = config.app.secret
 
 //return data for GET /users/:username
 const getUser = async (req, res, next) => {
@@ -25,6 +31,7 @@ const signup = async (req, res, next) => {
     if (!username || !password) {
       return res.status(400).send({ error: 'invalid username/password' })
     }
+
     const user = await User.findOne({ username })
     if (user) {
       return res.status(409).send({
@@ -56,11 +63,12 @@ const signin = async (req, res, next) => {
       return res.status(400).send({ error: 'invalid username/password' })
     }
     const user = await User.findOne({ username })
+    //console.log(user)
     if (user) {
       if (user.status === 'active') {
-        handleActiveUser(req, res, next, user)
+        return await handleActiveUser(req, res, next, user)
       } else {
-        handleBlockedUser(req, res, next, user)
+        return await handleBlockedUser(req, res, next, user)
       }
     } else {
       return res.status(422).send({
@@ -113,14 +121,28 @@ const handleActiveUser = async (req, res, next, user) => {
       })
       console.log(`${username} login successfully`)
       //res.status(200).send({ username: username, signin: 'success' })
-      res.locals.username = username
-      next() // return JWT in the following step
+      const token = jwt.sign({ username }, secret, {
+        expiresIn: '1h',
+      })
+      if (token) {
+        return res.status(200).send({
+          username: username,
+          token: token,
+        })
+      } else {
+        return res.status(500).send({
+          username: username,
+          signin: 'fail',
+          error: 'no token is created',
+        })
+      }
     } else {
       const hist = await SigninHistory.create({
         username: username,
         status: 'fail',
       })
       const failedTimes = await countSigninFailedWithinMinutes(username, 5)
+      //console.log(failedTimes)
       if (hist && failedTimes >= 3) {
         console.log('fail more than 3 times')
         await User.findOneAndUpdate(
@@ -144,7 +166,7 @@ const handleActiveUser = async (req, res, next, user) => {
 
 const handleBlockedUser = async (req, res, next, user) => {
   try {
-    const result = await isSigninWithinHours(user.username, 0.02)
+    const result = await isSigninWithinHours(user.username, 1)
     if (result) {
       return res.status(401).send({
         username: user.username,
@@ -159,7 +181,8 @@ const handleBlockedUser = async (req, res, next, user) => {
           new: true,
         }
       )
-      handleActiveUser(req, res, next, user)
+
+      return await handleActiveUser(req, res, next, user)
     }
   } catch (error) {
     throw new Error(error)

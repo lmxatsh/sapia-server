@@ -7,7 +7,7 @@ const verifyToken = (req, res, next) => {
   try {
     const authHeader = req.headers['authorization']
     const token = authHeader ? req.headers.authorization.split(' ')[1] : null
-    console.log(token)
+    console.log({ token })
     if (token) {
       jwt.verify(token, secret, (err, decoded) => {
         if (err) {
@@ -27,12 +27,13 @@ const verifyToken = (req, res, next) => {
 
 const returnToken = (req, res, next) => {
   try {
-    const token = jwt.sign({ username: req.body.username }, secret, {
+    const payload = req.params.payload || { sapia: 'sapia' }
+    const token = jwt.sign(payload, secret, {
       expiresIn: '1h',
     })
     if (token) {
       return res.status(200).send({
-        username: res.locals.username,
+        ...payload,
         token: token,
       })
     }

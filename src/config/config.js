@@ -17,6 +17,7 @@ const development = {
 const production = {
   app: {
     port: parseInt(process.env.PROD_APP_PORT) || 3000,
+    secret: process.env.JWT_SECRET || 'sapia',
   },
   mongodb: {
     host: process.env.PROD_MONGO_HOST || 'localhost',
@@ -27,9 +28,24 @@ const production = {
   },
 }
 
+const test = {
+  app: {
+    port: parseInt(process.env.TEST_APP_PORT) || 3000,
+    secret: process.env.JWT_SECRET || 'sapia',
+  },
+  mongodb: {
+    host: process.env.TEST_MONGO_HOST || 'localhost',
+    port: parseInt(process.env.TEST_MONGO_PORT) || 27017,
+    name: process.env.TEST_MONGO_NAME || 'sapia',
+    user: process.env.TEST_MONGO_USER || 'sapia',
+    passwd: process.env.TEST_MONGO_PASSWD || 'sapia',
+  },
+}
+
 const config = {
   development,
   production,
+  test,
 }
 
 export default config[env]
