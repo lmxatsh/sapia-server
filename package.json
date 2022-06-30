@@ -1,16 +1,32 @@
 {
-    "name": "sapia-server",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "lint": "npx eslint --ext .js src"
-    },
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "eslint": "^8.18.0",
-        "prettier": "^2.7.1"
-    }
+  "name": "sapia-server",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "dev": "nodemon  -r dotenv/config --watch src ./src/bin/server.js",
+    "lint": "eslint --ext .js src"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "babel-jest": "^28.1.1",
+    "eslint": "^8.18.0",
+    "jest": "^28.1.1",
+    "mongodb-memory-server": "^8.7.1",
+    "nodemon": "^2.0.18",
+    "prettier": "^2.7.1",
+    "supertest": "^6.2.3"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.0"
+  }
 }

@@ -1,0 +1,40 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: 'sapia-api'
+    expose:
+      - 3000
+    ports:
+      - '3000:3000'
+    restart: always
+    environment:
+      NODE_ENV: 'production'
+      PROD_MONGO_HOST: 'sapia-mongodb'
+      PROD_APP_PORT: 3000
+    depends_on:
+      - 'db'
+    networks:
+      - beckend
+  db:
+    image: 'mongo:5.0.0'
+    container_name: 'sapia-mongodb'
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'root'
+      MONGO_INITDB_ROOT_PASSWORD: 'root'
+    volumes:
+      - 'mongodb_data:/data/db'
+      - 'mongodb_config:/data/configdb'
+      - './init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js'
+    ports:
+      - '27017:27017'
+    networks:
+      - beckend
+networks:
+  beckend:
+volumes:
+  mongodb_data:
+  mongodb_config:
