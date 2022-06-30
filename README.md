@@ -4,8 +4,6 @@ TL;DR:
 
 This is a demo project for authentication API backed by NodeJs/ExpressJs/MongoDB/Docker
 
-[TOC]
-
 ## Run the service with Docker
 
 ```
@@ -35,7 +33,7 @@ GET /
 
 `'Hello world'`will be returned when send GET request to /, and no authentication is need for this.
 
-### POST users/signup
+### POST /users/signup
 
 when sending POST request to /users/signup with a json data `{username, password}`, the user will be registered and the response of the registration will be returned. This call will return an error if username or password is missing. An error will also be return if the username already exists.
 
@@ -82,7 +80,7 @@ Keep-Alive: timeout=5
 {"username":"test","signup":"success"}
 ```
 
-### POST users/signin
+### POST /users/signin
 
 when sending POST request to /users/signin with a json data `{username, password}`, a token will be returned if the user is able to login successfully. A user has a maximum of 3 attempts within 5 minutes, otherwise, the user will be locked. An error will be returned if the locked user want to sign in again. However, the user is allowed to retry after 1 hour.
 
@@ -133,7 +131,7 @@ Keep-Alive: timeout=5
 {"username":"test","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NTY1OTQxMjcsImV4cCI6MTY1NjU5NzcyN30.PSfCvvTui1bhUYaw8VRnTfxlgXIb1Mp6KuDs99j1eQQ"}
 ```
 
-### Get users/:username
+### Get /users/:username
 
 When sending GET request to /users/:username with valid token, the username and time when the user registed will be returned.
 
