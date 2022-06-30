@@ -4,7 +4,7 @@ import { verifyToken } from '../auth.middleware'
 let verifyRsult = ''
 
 jest.mock('jsonwebtoken', () => ({
-  verify: (token, secret, callback) => {
+  verify: (token) => {
     if (token === 'jwttoken') {
       verifyRsult = 'next'
     } else {
@@ -14,7 +14,7 @@ jest.mock('jsonwebtoken', () => ({
       }
     }
   },
-  sign: (payload, secret, options) => {
+  sign: () => {
     return 'jwt_token'
   },
   mock: 'mock',
@@ -34,7 +34,7 @@ describe('test controller of auth', () => {
   const mockNext = jest.fn()
 
   test('return token if providing authorization in the header', () => {
-    const res = verifyToken(mockReq, mockRes, mockNext)
+    verifyToken(mockReq, mockRes, mockNext)
     expect(verifyRsult).toEqual('next')
   })
 
@@ -53,7 +53,7 @@ describe('test controller of auth', () => {
       headers: { authorization: 'bearer incorrecttoken' },
       body: { username: 'newuser', password: '123' },
     }
-    const res = verifyToken(mockReq, mockRes, mockNext)
+    verifyToken(mockReq, mockRes, mockNext)
     expect(verifyRsult.status).toEqual(401)
     expect(verifyRsult.error).toEqual('invalid token')
   })

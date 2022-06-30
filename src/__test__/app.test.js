@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { User, SigninHistory } from '../models/index.js'
+import { User } from '../models/index.js'
 import bcrypt from 'bcryptjs'
 import supertest from 'supertest'
 import app from '../app.js'
@@ -17,7 +17,7 @@ const connectDB = async () => {
   try {
     mongoDB = await MongoMemoryServer.create()
     const dbUrl = mongoDB.getUri()
-    const conn = await mongoose.connect(dbUrl, {
+    await mongoose.connect(dbUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
@@ -40,7 +40,7 @@ const disconnectDB = async () => {
 const clearDB = async () => {
   const collections = mongoose.connection.collections
   for (let key in collections) {
-    const data = await collections[key].deleteMany()
+    await collections[key].deleteMany()
   }
 }
 
@@ -112,7 +112,7 @@ describe('integration test for app', () => {
         username: 'test',
         password: '123',
       }
-      const user = await User.create({
+      await User.create({
         username: 'test',
         password: bcrypt.hashSync('123', 10),
         status: 'active',
@@ -128,7 +128,7 @@ describe('integration test for app', () => {
         username: 'test',
         password: '1234',
       }
-      const user = await User.create({
+      await User.create({
         username: 'test',
         password: bcrypt.hashSync('123', 10),
         status: 'active',
@@ -144,14 +144,14 @@ describe('integration test for app', () => {
         username: 'test',
         password: '1234',
       }
-      const user = await User.create({
+      await User.create({
         username: 'test',
         password: bcrypt.hashSync('123', 10),
         status: 'active',
       })
-      const res1 = await request.post('/users/signin').send(data)
-      const res2 = await request.post('/users/signin').send(data)
-      const res3 = await request.post('/users/signin').send(data)
+      await request.post('/users/signin').send(data)
+      await request.post('/users/signin').send(data)
+      await request.post('/users/signin').send(data)
       const res4 = await request.post('/users/signin').send(data)
       expect(res4.status).toBe(401)
       expect(res4.body.error).toEqual('blocked')
@@ -164,7 +164,7 @@ describe('integration test for app', () => {
         username: 'test',
         password: '123',
       }
-      const user = await User.create({
+      await User.create({
         username: data.username,
         password: bcrypt.hashSync(data.password, 10),
         status: 'active',

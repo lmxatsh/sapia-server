@@ -1,14 +1,14 @@
 //import { jest } from '@jest/globals' not reuired if babel is used
-import { signup, signin, getUser } from '../users.controllers'
+import { signup, signin } from '../users.controllers'
 
 //mock bcrypt
 jest.mock('bcryptjs', () => ({
   compare: (a1, a2) => {
-    return new Promise((res, rej) => {
+    return new Promise((res) => {
       res(a1 === a2)
     })
   },
-  hashSync: (a1, a2) => a1,
+  hashSync: (pwd) => pwd,
 }))
 
 //mock models
@@ -16,7 +16,7 @@ jest.mock('../../models/index.js', () => {
   return {
     User: {
       findOne: ({ username }) => {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
           const data = {
             blockeduser: {
               username: 'blockeduser',
@@ -43,12 +43,12 @@ jest.mock('../../models/index.js', () => {
         })
       },
       create: (data) => {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
           res(data)
         })
       },
       findOneAndUpdate: (data) => {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
           res(data)
         })
       },
@@ -56,7 +56,7 @@ jest.mock('../../models/index.js', () => {
 
     SigninHistory: {
       findOne: ({ username }) => {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
           const data = {
             blockeduser: {
               username: 'blockeduser',
@@ -78,12 +78,12 @@ jest.mock('../../models/index.js', () => {
         })
       },
       create: (data) => {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
           res(data)
         })
       },
       count: (data) => {
-        return new Promise((res, rej) => {
+        return new Promise((res) => {
           res(data.username === 'blockeduser' ? 5 : 1)
         })
       },
