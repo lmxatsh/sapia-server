@@ -144,7 +144,7 @@ const handleActiveUser = async (req, res, next, user) => {
       const failedTimes = await countSigninFailedWithinMinutes(username, 5)
       //console.log(failedTimes)
       if (hist && failedTimes >= 3) {
-        console.log('fail more than 3 times')
+        console.log(`${username} failed more than 3 times`)
         await User.findOneAndUpdate(
           { username },
           { status: 'blocked' },

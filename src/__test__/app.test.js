@@ -157,4 +157,37 @@ describe('integration test for app', () => {
       expect(res4.body.error).toEqual('blocked')
     })
   })
+
+  describe('test access user data via /users/:user', () => {
+    test('return 200 and {username, createdAt} when sending GET request with valid token', async () => {
+      const data = {
+        username: 'test',
+        password: '123',
+      }
+      const user = await User.create({
+        username: data.username,
+        password: bcrypt.hashSync(data.password, 10),
+        status: 'active',
+      })
+
+      const signinRes = await request.post('/users/signin').send(data)
+      const res = await request
+        .get(`/users/${data.username}`)
+        .set('Authorization', `Bearer ${signinRes.body.token}`)
+      expect(res.status).toBe(200)
+      expect(res.body.username).toEqual(data.username)
+      expect(res.body.createdAt).toBeDefined
+    })
+    test('return 401 when sending GET request with invalid token', async () => {
+      const res = await request.get(`/users/test`)
+      expect(res.status).toEqual(401)
+      expect(res.body.error).toEqual(`unauthorized access`)
+    })
+  })
+
+  test('return 404 when access resource via invalid URL', async () => {
+    const invalidUrl = '/nowhere'
+    const res = await request.get(invalidUrl)
+    expect(res.status).toEqual(404)
+  })
 })
