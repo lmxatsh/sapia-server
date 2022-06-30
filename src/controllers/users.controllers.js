@@ -5,7 +5,11 @@ import { User, SigninHistory } from '../models/index.js'
 //import SigninHistory from '../models/signinhistory.model'
 import config from '../config/config.js'
 
-const secret = config.app.secret
+const SECRET = config.app.secret
+const RETRY_TIME_LIMIT = config.app.retryTimeLimit
+const RETRY_NUM_LIMIT = config.app.retryNumLimit
+const RETRY_ALLOWED_AFTER = config.app.retryAllowedAfter
+const TOKEN_EXPIRES_AFTER = config.app.tokenExpiresAfter
 
 //return data for GET /users/:username
 const getUser = async (req, res, next) => {
@@ -84,7 +88,7 @@ const signin = async (req, res, next) => {
 
 const isSigninWithinHours = async (username, hours) => {
   try {
-    const dateBefore = new Date(Date.now() - hours * 3600000)
+    const dateBefore = new Date(Date.now() - parseInt(hours[0]) * 3600000)
     //dateBefore.setHours(dateBefore.getHours() - hours)
     const signinRecord = await SigninHistory.findOne({
       username: username,
@@ -98,7 +102,7 @@ const isSigninWithinHours = async (username, hours) => {
 
 const countSigninFailedWithinMinutes = async (username, minutes) => {
   try {
-    const dateBefore = new Date(Date.now() - minutes * 60000)
+    const dateBefore = new Date(Date.now() - parseInt(minutes[0]) * 60000)
     const count = await SigninHistory.count({
       username: username,
       status: 'fail',
@@ -121,8 +125,8 @@ const handleActiveUser = async (req, res, next, user) => {
       })
       console.log(`${username} login successfully`)
       //res.status(200).send({ username: username, signin: 'success' })
-      const token = jwt.sign({ username }, secret, {
-        expiresIn: '1h',
+      const token = jwt.sign({ username }, SECRET, {
+        expiresIn: TOKEN_EXPIRES_AFTER,
       })
       if (token) {
         return res.status(200).send({
@@ -141,9 +145,12 @@ const handleActiveUser = async (req, res, next, user) => {
         username: username,
         status: 'fail',
       })
-      const failedTimes = await countSigninFailedWithinMinutes(username, 5)
+      const failedTimes = await countSigninFailedWithinMinutes(
+        username,
+        RETRY_TIME_LIMIT
+      )
       //console.log(failedTimes)
-      if (hist && failedTimes >= 3) {
+      if (hist && failedTimes >= RETRY_NUM_LIMIT) {
         console.log(`${username} failed more than 3 times`)
         await User.findOneAndUpdate(
           { username },
@@ -166,7 +173,7 @@ const handleActiveUser = async (req, res, next, user) => {
 
 const handleBlockedUser = async (req, res, next, user) => {
   try {
-    const result = await isSigninWithinHours(user.username, 1)
+    const result = await isSigninWithinHours(user.username, RETRY_ALLOWED_AFTER)
     if (result) {
       return res.status(401).send({
         username: user.username,
