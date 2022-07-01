@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV || 'development'
 
 const development = {
   app: {
-    port: parseInt(process.env.DEV_APP_PORT) || 3000,
+    port: parseInt(process.env.PORT) || 3000,
     secret: process.env.JWT_SECRET || 'sapia',
     retryTimeLimit: process.env.RETRY_TIME_LIMIT || '5m',
     retryNumLimit: process.env.RETRY_NUM_LIMIT || 3,
@@ -20,7 +20,7 @@ const development = {
 
 const production = {
   app: {
-    port: parseInt(process.env.PROD_APP_PORT) || 3000,
+    port: parseInt(process.env.PORT) || 3000,
     secret: process.env.JWT_SECRET || 'sapia',
     retryTimeLimit: process.env.RETRY_TIME_LIMIT || '5m',
     retryNumLimit: process.env.RETRY_NUM_LIMIT || 3,
@@ -38,7 +38,7 @@ const production = {
 
 const test = {
   app: {
-    port: parseInt(process.env.TEST_APP_PORT) || 3000,
+    port: parseInt(process.env.PORT) || 3000,
     secret: process.env.JWT_SECRET || 'sapia',
     retryTimeLimit: process.env.RETRY_TIME_LIMIT || '5m',
     retryNumLimit: process.env.RETRY_NUM_LIMIT || 3,
