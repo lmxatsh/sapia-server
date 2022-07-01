@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "app.js",
+  "main": "./src/bin/server.js",
   "scripts": {
     "test": "jest",
     "dev": "nodemon  -r dotenv/config --watch src ./src/bin/server.js",
-    "lint": "eslint --ext .js src"
+    "lint": "eslint --ext .js src",
+    "start": "node --optimize_for_size --max_old_space_size=460 --gc_interval=100 ./src/bin/server.js"
   },
   "author": "",
   "license": "ISC",

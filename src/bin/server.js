@@ -4,14 +4,16 @@ import mongoose from 'mongoose'
 
 const PORT = config.app.port
 
-const mongoUri = `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.name}`
+const mongoUri =
+  process.env.MONGO_URI ||
+  `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.name}`
 
 const mongoOptions = {
   user: config.mongodb.user,
   pass: config.mongodb.passwd,
   useNewUrlParser: true, // To use the new parser rather than the depreciated one
   useUnifiedTopology: true, // To use the new Server Discover and Monitoring engine
-  authSource: 'admin', //specify authentication database
+  authSource: config.mongodb.name, //specify authentication database
 }
 
 mongoose

@@ -1,4 +1,4 @@
-db = db.getSiblingDB('admin')
+db = db.getSiblingDB('sapia')
 db.auth('root', 'root')
 db.createUser({
   user: 'sapia',
