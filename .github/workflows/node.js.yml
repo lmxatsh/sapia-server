@@ -24,3 +24,16 @@ jobs:
       run: npm install
     - name: Run tests
       run: npm test
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    - uses: actions/checkout@v3
+    - name: Use Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "sapia-demo"
+        heroku_email: "mingxu2022au@gmail.com"
+
+
+
