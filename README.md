@@ -1,10 +1,12 @@
 # sapia-server
 
-TL;DR:
+**TL;DR:**
 
 This is a demo project for authentication API backed by NodeJs/ExpressJs/MongoDB/Docker
 
 ## Run the service with Docker
+
+After cloning the project, enter the directory and start the service by running below command
 
 ```
 docker compose up -d
@@ -31,11 +33,11 @@ GET /
 
 ### GET /
 
-`'Hello world'`will be returned when send GET request to /, and no authentication is need for this.
+`'Sapia Demo Project'`will be returned when send GET request to /, and no authentication is needed.
 
 ### POST /users/signup
 
-when sending POST request to /users/signup with a json data `{username, password}`, the user will be registered and the response of the registration will be returned. This call will return an error if username or password is missing. An error will also be return if the username already exists.
+when sending POST request to /users/signup with a json data `{username, password}`, the user will be registered and the response of the registration will be returned. This call will return an error if username or password is missing. An error will also be returned if the username already exists.
 
 ##### Request data:
 
@@ -62,7 +64,7 @@ when sending POST request to /users/signup with a json data `{username, password
 _Example Request:_
 
 ```
- curl -iv -X POST 127.0.0.1:3000/users/signup -H "Content-Type: application/json" -d '{"username":"test", "password": "123"}'
+ curl -i -X POST 127.0.0.1:3000/users/signup -H "Content-Type: application/json" -d '{"username":"test", "password": "123"}'
 ```
 
 _Example Response:_
@@ -92,15 +94,15 @@ when sending POST request to /users/signin with a json data `{username, password
 
 ---
 
-**Returns:**
+##### Returns:
 
 **username:** the name of the user
 
-**token:** a token for access authentication
+**token:** a token for authentication
 
 ---
 
-**Errors:**
+##### Errors:
 
 **HTTP response status code (400)**: invalid username/password
 
@@ -135,7 +137,7 @@ Keep-Alive: timeout=5
 
 When sending GET request to /users/:username with valid token, the username and time when the user registed will be returned.
 
-This call will return an error if a valid token is not provided in the headers of the request.
+This call will return an error if no valid token is provided in the headers of the request.
 
 ##### Request headers:
 
@@ -192,3 +194,7 @@ After cloning the repo , use `npm install` to install the dependencies. Run belo
 ```
 npm run test
 ```
+
+## Try the demo project hosted by Heroku and MongoDB Altas
+
+The demo project can also be visited via https://lower-pylon-13345.herokuapp.com/.
